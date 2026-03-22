@@ -1,0 +1,16 @@
+{% extends "library/base_library.html" %}
+
+{% block title %}Delete Song | Musiculous{% endblock %}
+
+{% block content %}
+<article class="card">
+    <h2 style="margin-top:0;">Delete Song</h2>
+    <p>You are about to delete <strong>{{ song.song_name }}</strong>. This action cannot be undone.</p>
+
+    <form method="post" class="row">
+        {% csrf_token %}
+        <button class="warn" type="submit">Yes, Delete Song</button>
+        <a class="btn" href="{% url 'song_detail' song.id %}">Cancel</a>
+    </form>
+</article>
+{% endblock %}

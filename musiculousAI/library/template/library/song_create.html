@@ -1,0 +1,29 @@
+{% extends "library/base_library.html" %}
+
+{% block title %}Create Song | Musiculous{% endblock %}
+
+{% block content %}
+<h2 style="margin-top:0; font-size:1.08rem;">Create Song Draft</h2>
+<p class="muted">This creates a song record and queues generation.</p>
+
+{% if error %}
+    <div class="error">{{ error }}</div>
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    <label for="song_name">Song Name</label>
+    <input id="song_name" name="song_name" type="text" maxlength="50" required>
+
+    <label for="prompt">Prompt</label>
+    <textarea id="prompt" name="prompt" maxlength="500" required placeholder="Describe mood, instruments, and style..."></textarea>
+
+    <label for="description">Description (Optional)</label>
+    <textarea id="description" name="description" maxlength="300" placeholder="Extra notes for your library"></textarea>
+
+    <div class="row">
+        <button class="primary" type="submit">Create and Queue</button>
+        <a class="btn" href="{% url 'library_home' %}">Cancel</a>
+    </div>
+</form>
+{% endblock %}

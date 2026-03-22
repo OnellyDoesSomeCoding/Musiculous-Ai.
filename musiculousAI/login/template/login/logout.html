@@ -1,0 +1,20 @@
+{% extends "login/base_auth.html" %}
+
+{% block title %}Logout | Musiculous AI{% endblock %}
+
+{% block content %}
+<section class="brand">
+    <p class="kicker">Session Control</p>
+    <h1>Ready to log out?</h1>
+    <p>You can sign back in anytime to continue generating and managing tracks.</p>
+</section>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="actions">
+        <button class="button" type="submit">Confirm Logout</button>
+    </div>
+</form>
+
+<p class="meta"><a href="{% url 'home' %}">Cancel and return home</a></p>
+{% endblock %}

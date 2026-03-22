@@ -1,0 +1,26 @@
+{% extends "login/base_auth.html" %}
+
+{% block title %}Musiculous AI | Home{% endblock %}
+
+{% block content %}
+<section class="brand">
+    <p class="kicker">AI Music Platform</p>
+    <h1>Generate, Save, and Share Music</h1>
+    <p>Musiculous AI helps you turn prompts into tracks, keep them in your private library, and share public songs with links.</p>
+</section>
+
+<div class="actions">
+    {% if request.user.is_authenticated %}
+        <a class="button" href="{% url 'library_home' %}" style="display:block;text-align:center;text-decoration:none;">Go To Library</a>
+        <a class="button alt" href="{% url 'logout' %}" style="display:block;text-align:center;text-decoration:none;margin-top:8px;">Log Out</a>
+    {% else %}
+        <a class="button" href="{% url 'login' %}" style="display:block;text-align:center;text-decoration:none;">Log In</a>
+        <a class="button alt" href="{% url 'signup' %}" style="display:block;text-align:center;text-decoration:none;margin-top:8px;">Create Account</a>
+        <a class="button alt" href="{% url 'library_home' %}" style="display:block;text-align:center;text-decoration:none;margin-top:8px;">Browse Library Area</a>
+    {% endif %}
+</div>
+
+<p class="meta" style="margin-top:16px; text-align:left;">
+    Features in progress: AI generation queue, song metadata editing, sharing controls, and downloadable audio files.
+</p>
+{% endblock %}

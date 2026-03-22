@@ -1,0 +1,21 @@
+{% extends "library/base_library.html" %}
+
+{% block title %}Edit Song | Musiculous{% endblock %}
+
+{% block content %}
+<h2 style="margin-top:0; font-size:1.08rem;">Edit Song</h2>
+
+<form method="post">
+    {% csrf_token %}
+    <label for="song_name">Song Name</label>
+    <input id="song_name" name="song_name" type="text" maxlength="50" value="{{ song.song_name }}" required>
+
+    <label for="description">Description</label>
+    <textarea id="description" name="description" maxlength="300">{{ song.description }}</textarea>
+
+    <div class="row">
+        <button class="primary" type="submit">Save Changes</button>
+        <a class="btn" href="{% url 'song_detail' song.id %}">Cancel</a>
+    </div>
+</form>
+{% endblock %}

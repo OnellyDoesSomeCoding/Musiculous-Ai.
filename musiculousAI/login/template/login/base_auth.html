@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Musiculous AI{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #0a0f17;
+            --bg-card: rgba(9, 16, 28, 0.85);
+            --line: rgba(255, 255, 255, 0.16);
+            --text: #f4f7ff;
+            --muted: #9eaac4;
+            --accent: #32e7c6;
+            --accent-2: #f5a623;
+            --danger: #ff6d6d;
+            --shadow: 0 16px 45px rgba(0, 0, 0, 0.42);
+            --radius: 18px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Space Grotesk", sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(900px 500px at -10% -10%, rgba(50, 231, 198, 0.28), transparent 60%),
+                radial-gradient(900px 500px at 110% 0%, rgba(245, 166, 35, 0.20), transparent 60%),
+                linear-gradient(145deg, #060b12 0%, #0b1524 50%, #080d16 100%);
+            display: grid;
+            place-items: center;
+            padding: 24px;
+        }
+
+        .orb {
+            position: fixed;
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.45;
+            pointer-events: none;
+            z-index: 0;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .orb.one {
+            top: 8%;
+            left: 8%;
+            background: #2be7c3;
+        }
+
+        .orb.two {
+            bottom: 8%;
+            right: 8%;
+            background: #f7ad2a;
+            animation-delay: 1.2s;
+        }
+
+        .shell {
+            width: min(100%, 460px);
+            z-index: 1;
+            background: var(--bg-card);
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            border-radius: var(--radius);
+            padding: 28px 26px;
+            backdrop-filter: blur(8px);
+            animation: slideUp 420ms ease-out;
+        }
+
+        .brand {
+            margin-bottom: 16px;
+        }
+
+        .brand .kicker {
+            letter-spacing: 0.11em;
+            text-transform: uppercase;
+            color: var(--accent);
+            font-size: 0.76rem;
+            margin: 0 0 8px;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-family: "Syne", sans-serif;
+            font-size: 1.9rem;
+            line-height: 1.1;
+        }
+
+        .brand p {
+            margin: 10px 0 0;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: #d7def1;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            border: 1px solid var(--line);
+            background: rgba(4, 9, 18, 0.85);
+            color: var(--text);
+            border-radius: 12px;
+            padding: 12px 14px;
+            font: inherit;
+            margin-bottom: 14px;
+            transition: border-color 180ms ease, transform 180ms ease;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+            outline: none;
+            transform: translateY(-1px);
+        }
+
+        .helptext,
+        ul.errorlist {
+            margin: -8px 0 12px;
+            padding-left: 0;
+            list-style: none;
+            color: #ffc1a1;
+            font-size: 0.82rem;
+        }
+
+        .error-box {
+            border: 1px solid rgba(255, 109, 109, 0.5);
+            background: rgba(65, 15, 15, 0.5);
+            color: #ffd2d2;
+            border-radius: 12px;
+            padding: 10px 12px;
+            margin-bottom: 14px;
+            font-size: 0.9rem;
+        }
+
+        .actions {
+            margin-top: 8px;
+        }
+
+        .button {
+            width: 100%;
+            border: 0;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent), #6de8d0);
+            color: #05211d;
+            font-family: "Syne", sans-serif;
+            font-size: 0.98rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            padding: 12px 14px;
+            cursor: pointer;
+            transition: transform 180ms ease, box-shadow 180ms ease;
+            box-shadow: 0 10px 20px rgba(50, 231, 198, 0.22);
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 26px rgba(50, 231, 198, 0.26);
+        }
+
+        .button.alt {
+            background: linear-gradient(135deg, #223147, #334f74);
+            color: #dfe8f8;
+            box-shadow: none;
+        }
+
+        .meta {
+            margin-top: 16px;
+            color: var(--muted);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .meta a {
+            color: var(--accent-2);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .meta a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 560px) {
+            .shell {
+                padding: 22px 18px;
+            }
+
+            .brand h1 {
+                font-size: 1.55rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="orb one" aria-hidden="true"></div>
+    <div class="orb two" aria-hidden="true"></div>
+    <main class="shell">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

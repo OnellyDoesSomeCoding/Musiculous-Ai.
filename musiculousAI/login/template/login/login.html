@@ -1,0 +1,31 @@
+{% extends "login/base_auth.html" %}
+
+{% block title %}Login | Musiculous AI{% endblock %}
+
+{% block content %}
+<section class="brand">
+    <p class="kicker">Welcome Back</p>
+    <h1>Login to Musiculous AI</h1>
+    <p>Use your username or email and password to access your music library.</p>
+</section>
+
+<form method="post" novalidate>
+    {% csrf_token %}
+
+    {% if error_message %}
+        <div class="error-box">{{ error_message }}</div>
+    {% endif %}
+
+    <label for="id_identifier">Username or Email</label>
+    <input id="id_identifier" type="text" name="identifier" required autocomplete="username">
+
+    <label for="id_password">Password</label>
+    <input id="id_password" type="password" name="password" required autocomplete="current-password">
+
+    <div class="actions">
+        <button class="button" type="submit">Log In</button>
+    </div>
+</form>
+
+<p class="meta">Need an account? <a href="{% url 'signup' %}">Create one</a></p>
+{% endblock %}

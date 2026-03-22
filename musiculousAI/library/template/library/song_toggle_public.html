@@ -1,0 +1,20 @@
+{% extends "library/base_library.html" %}
+
+{% block title %}Toggle Visibility | Musiculous{% endblock %}
+
+{% block content %}
+<article class="card">
+    <h2 style="margin-top:0;">Change Visibility</h2>
+    <p>
+        Song <strong>{{ song.song_name }}</strong> is currently
+        <strong>{% if song.is_public %}Public{% else %}Private{% endif %}</strong>.
+    </p>
+    <p class="muted">Press confirm to switch it to {% if song.is_public %}Private{% else %}Public{% endif %}.</p>
+
+    <form method="post" class="row">
+        {% csrf_token %}
+        <button class="primary" type="submit">Confirm Toggle</button>
+        <a class="btn" href="{% url 'song_detail' song.id %}">Cancel</a>
+    </form>
+</article>
+{% endblock %}
