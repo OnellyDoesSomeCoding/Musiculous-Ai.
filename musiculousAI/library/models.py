@@ -1,6 +1,27 @@
 from django.conf import settings
 from django.db import models
 
+
+class SiteConfiguration(models.Model):
+    """Singleton model for site-wide admin controls."""
+    generation_enabled = models.BooleanField(
+        default=True,
+        help_text="Uncheck to disable new AI music generation for all users.",
+    )
+
+    class Meta:
+        verbose_name = "Site Configuration"
+        verbose_name_plural = "Site Configuration"
+
+    def __str__(self):
+        return "Site Configuration"
+
+    @classmethod
+    def get(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+
 class Song(models.Model):
     STATUS_CHOICES = (
         ("queued", "Queued"),
@@ -20,6 +41,8 @@ class Song(models.Model):
     cover_image = models.ImageField(upload_to="song_covers/", null=True, blank=True)
     song_file = models.FileField(upload_to="songs/", null=True, blank=True)
     genres = models.CharField(max_length=120, blank=True)
+
+    ai_source = models.CharField(max_length=20, blank=True, default="")  # e.g. "suno", "replicate"
 
     is_public = models.BooleanField(default=False)
     time_created = models.DateTimeField("Time Created", auto_now_add=True)

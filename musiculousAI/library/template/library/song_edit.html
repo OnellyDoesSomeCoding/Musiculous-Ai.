@@ -5,13 +5,22 @@
 {% block content %}
 <h2 style="margin-top:0; font-size:1.08rem;">Edit Song</h2>
 
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <label for="song_name">Song Name</label>
     <input id="song_name" name="song_name" type="text" maxlength="50" value="{{ song.song_name }}" required>
 
     <label for="description">Description</label>
     <textarea id="description" name="description" maxlength="300">{{ song.description }}</textarea>
+
+    <label for="cover_image">Cover Image</label>
+    {% if song.cover_image %}
+    <div style="margin-bottom:8px;">
+        <img src="{{ song.cover_image.url }}" alt="Current cover" style="width:80px; height:80px; object-fit:cover; border-radius:6px;">
+        <span class="muted" style="margin-left:8px; font-size:0.85rem;">Current cover</span>
+    </div>
+    {% endif %}
+    <input id="cover_image" name="cover_image" type="file" accept="image/*">
 
     <div class="row">
         <button class="primary" type="submit">Save Changes</button>

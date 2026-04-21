@@ -10,17 +10,43 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+def _load_local_env() -> None:
+    """Load key=value pairs from a local .env file for development."""
+    env_path = BASE_DIR.parent / ".env"
+    if not env_path.exists():
+        return
+
+    for raw_line in env_path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        os.environ[key.strip()] = value.strip().strip('"').strip("'")
+
+
+_load_local_env()
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-17p^6u-t$nt2&o*!cl%98d!&9u#n$zg(r!-4qr*b+j*8&uhmd0'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-dev-only-change-me')
+
+SUNO_API_KEY = os.getenv("SUNO_API_KEY", "")
+SUNO_API_URL = os.getenv("SUNO_API_URL", "https://api.sunoapi.org/api/v1")
+SUNO_MODEL = os.getenv("SUNO_MODEL", "V4_5ALL")
+SUNO_CALLBACK_URL = os.getenv("SUNO_CALLBACK_URL", "https://example.com/callback")
+
+REPLICATE_API_KEY = os.getenv("REPLICATE_API_KEY", "")
+REPLICATE_MUSICGEN_VERSION = os.getenv("REPLICATE_MUSICGEN_VERSION", "")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -117,6 +143,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Use custom user model for authentication.
 AUTH_USER_MODEL = 'login.User'
