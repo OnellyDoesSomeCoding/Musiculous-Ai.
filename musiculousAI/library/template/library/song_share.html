@@ -1,0 +1,45 @@
+{% extends "library/base_library.html" %}
+
+{% block title %}Share Song | Musiculous{% endblock %}
+
+{% block content %}
+<article class="card">
+    <h2 style="margin-top:0;">Share Song</h2>
+    <p>
+        <strong>{{ song.song_name }}</strong> is now public.
+        Share this link with anyone so they can listen and download.
+    </p>
+
+    <label for="share_link">Share URL</label>
+    <input id="share_link" type="text" value="{{ share_url }}" readonly>
+
+    <div class="row" style="margin-top:8px;">
+        <button class="primary" type="button" onclick="copyShareLink()">Copy Link</button>
+        <a class="btn" href="{% url 'song_detail' song.id %}">Back to Song</a>
+    </div>
+
+    <p id="copy_message" class="muted" style="margin-top:10px; font-size:0.88rem;"></p>
+</article>
+
+<script>
+function copyShareLink() {
+    const input = document.getElementById("share_link");
+    const message = document.getElementById("copy_message");
+    input.select();
+    input.setSelectionRange(0, 99999);
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(input.value)
+            .then(() => { message.textContent = "Link copied to clipboard."; })
+            .catch(() => {
+                document.execCommand("copy");
+                message.textContent = "Link copied to clipboard.";
+            });
+        return;
+    }
+
+    document.execCommand("copy");
+    message.textContent = "Link copied to clipboard.";
+}
+</script>
+{% endblock %}

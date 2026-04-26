@@ -22,6 +22,23 @@
     {% endif %}
     <input id="cover_image" name="cover_image" type="file" accept="image/*">
 
+    <div class="card" style="margin:8px 0 12px;">
+        <h3 style="margin-top:0; font-size:0.98rem;">Folders</h3>
+        {% if user_folders %}
+            <p class="muted" style="margin-top:0; font-size:0.88rem;">Pick folders this song belongs to.</p>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:8px;">
+                {% for folder in user_folders %}
+                    <label class="row" style="gap:8px; border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:8px 10px; cursor:pointer; margin:0;">
+                        <input type="checkbox" name="folder_ids" value="{{ folder.id }}" style="width:auto; margin:0;" {% if folder.id in selected_folder_ids %}checked{% endif %}>
+                        <span>{{ folder.name }}</span>
+                    </label>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="muted" style="margin:0; font-size:0.88rem;">No folders yet. Create one from your library page.</p>
+        {% endif %}
+    </div>
+
     <div class="row">
         <button class="primary" type="submit">Save Changes</button>
         <a class="btn" href="{% url 'song_detail' song.id %}">Cancel</a>

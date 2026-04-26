@@ -1,0 +1,35 @@
+{% extends "library/base_library.html" %}
+
+{% block title %}Shared Song | Musiculous{% endblock %}
+
+{% block content %}
+<article class="card">
+    {% if song.cover_image %}
+    <img src="{{ song.cover_image.url }}" alt="Cover" style="width:100%; max-height:220px; object-fit:cover; border-radius:6px; margin-bottom:12px;">
+    {% endif %}
+
+    <div class="row" style="justify-content:space-between; margin-bottom:8px;">
+        <h2 style="margin:0; font-size:1.2rem;">{{ song.song_name }}</h2>
+        <span class="label">Public Share</span>
+    </div>
+
+    <p class="muted" style="margin-top:0;">{{ song.description|default:"No description provided." }}</p>
+    <p><strong>By:</strong> {{ song.owner.username }}</p>
+
+    {% if song.song_file %}
+    <div style="margin:16px 0;">
+        <audio controls style="width:100%;">
+            <source src="{{ song.song_file.url }}" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+    <div class="row">
+        <a class="btn primary" href="{% url 'song_shared_download' song.share_token %}">Download MP3</a>
+    </div>
+    {% elif song.generation_status == 'generating' %}
+    <p class="muted">Audio is still being generated.</p>
+    {% else %}
+    <p class="muted">No audio is available for this shared song yet.</p>
+    {% endif %}
+</article>
+{% endblock %}

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.db.models import Count
-from .models import Song, SiteConfiguration
+from .models import Folder, Song, SiteConfiguration
 
 
 @admin.register(SiteConfiguration)
@@ -30,3 +30,16 @@ class SongAdmin(admin.ModelAdmin):
     ordering = ("-time_created",)
     readonly_fields = ("time_created", "most_recent_update")
     actions = ["delete_selected"]
+
+
+@admin.register(Folder)
+class FolderAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "owner", "time_created", "song_count")
+    search_fields = ("name", "owner__username", "owner__email")
+    ordering = ("name",)
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(_song_count=Count("songs"))
+
+    def song_count(self, obj):
+        return obj._song_count

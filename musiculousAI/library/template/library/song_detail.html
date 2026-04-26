@@ -44,11 +44,19 @@
             <a class="btn" href="{% url 'song_download' song.id %}">Download MP3</a>
         {% endif %}
         {% if request.user.is_authenticated and request.user == song.owner %}
+            <a class="btn primary" href="{% url 'song_share' song.id %}">Share Link</a>
             <a class="btn" href="{% url 'song_edit' song.id %}">Edit</a>
             <a class="btn" href="{% url 'song_delete' song.id %}">Delete</a>
             <a class="btn" href="{% url 'song_toggle_public' song.id %}">Toggle Publicity</a>
         {% endif %}
         <a class="btn" href="{% url 'library_home' %}">Back to Library</a>
     </div>
+
+    {% if share_url %}
+    <div class="card" style="margin-top:14px;">
+        <h3 style="margin:0 0 8px; font-size:0.96rem;">Public Share URL</h3>
+        <input type="text" value="{{ share_url }}" readonly>
+    </div>
+    {% endif %}
 </article>
 {% endblock %}

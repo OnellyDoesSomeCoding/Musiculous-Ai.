@@ -1,6 +1,6 @@
 {% extends "library/base_library.html" %}
 
-{% block title %}My Library | Musiculous{% endblock %}
+{% block title %}{{ folder.name }} | Musiculous{% endblock %}
 
 {% block content %}
 <div class="library-layout">
@@ -22,7 +22,7 @@
         </details>
 
         <div class="folder-list">
-            <a class="folder-item active" href="{% url 'library_home' %}">
+            <a class="folder-item" href="{% url 'library_home' %}">
                 <span class="folder-thumb" style="display:flex; align-items:center; justify-content:center; font-size:0.85rem;">♪</span>
                 <span style="display:flex; justify-content:space-between; width:100%; gap:8px;">
                     <strong style="font-size:0.9rem;">All Songs</strong>
@@ -30,16 +30,16 @@
                 </span>
             </a>
 
-            {% for folder in folder_list %}
-                <a class="folder-item" href="{% url 'folder_detail' folder.id %}">
-                    {% if folder.image %}
-                        <img class="folder-thumb" src="{{ folder.image.url }}" alt="{{ folder.name }}">
+            {% for item in folder_list %}
+                <a class="folder-item {% if item.id == active_folder_id %}active{% endif %}" href="{% url 'folder_detail' item.id %}">
+                    {% if item.image %}
+                        <img class="folder-thumb" src="{{ item.image.url }}" alt="{{ item.name }}">
                     {% else %}
                         <span class="folder-thumb" style="display:flex; align-items:center; justify-content:center; font-size:0.85rem;">F</span>
                     {% endif %}
                     <span style="display:flex; justify-content:space-between; width:100%; gap:8px;">
-                        <span style="font-size:0.9rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ folder.name }}</span>
-                        <span class="muted" style="font-size:0.82rem;">{{ folder.song_count }}</span>
+                        <span style="font-size:0.9rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ item.name }}</span>
+                        <span class="muted" style="font-size:0.82rem;">{{ item.song_count }}</span>
                     </span>
                 </a>
             {% empty %}
@@ -49,9 +49,22 @@
     </aside>
 
     <section>
-        <div class="row" style="justify-content:space-between; margin-bottom:14px;">
-            <h2 style="margin:0; font-size:1.08rem;">{{ current_folder_name }}</h2>
-            <span class="muted">{{ songs|length }} track{{ songs|length|pluralize }}</span>
+        <div class="row" style="justify-content:space-between; align-items:flex-start; margin-bottom:14px;">
+            <div>
+                <h2 style="margin:0; font-size:1.08rem;">{{ folder.name }}</h2>
+                <p class="muted" style="margin:4px 0 0;">{{ songs|length }} track{{ songs|length|pluralize }}</p>
+            </div>
+
+            <form method="post" action="{% url 'folder_add_song' folder.id %}" class="row" style="gap:8px; margin:0;">
+                {% csrf_token %}
+                <select name="song_id" required style="width:220px; margin:0;">
+                    <option value="">Add Song to Folder...</option>
+                    {% for song in available_songs %}
+                        <option value="{{ song.id }}">{{ song.song_name }}</option>
+                    {% endfor %}
+                </select>
+                <button class="primary" type="submit">Add Song</button>
+            </form>
         </div>
 
         {% if songs %}
@@ -86,9 +99,8 @@
             </section>
         {% else %}
             <article class="card">
-                <h3 style="margin-top:0;">No songs yet</h3>
-                <p class="muted">Create your first song prompt to start building your personal library.</p>
-                <a class="btn primary" href="{% url 'song_create' %}">Create Your First Song</a>
+                <h3 style="margin-top:0;">Folder is empty</h3>
+                <p class="muted">Use the Add Song control to include tracks in this folder.</p>
             </article>
         {% endif %}
     </section>

@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+import uuid
 
 
 class SiteConfiguration(models.Model):
@@ -43,6 +44,7 @@ class Song(models.Model):
     genres = models.CharField(max_length=120, blank=True)
 
     ai_source = models.CharField(max_length=20, blank=True, default="")  # e.g. "suno", "replicate"
+    share_token = models.UUIDField(unique=True, null=True, blank=True, editable=False)
 
     is_public = models.BooleanField(default=False)
     time_created = models.DateTimeField("Time Created", auto_now_add=True)
@@ -51,3 +53,22 @@ class Song(models.Model):
 
     def __str__(self):
         return self.song_name
+
+
+class Folder(models.Model):
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="folders",
+    )
+    name = models.CharField(max_length=50)
+    image = models.ImageField(upload_to="folder_images/", null=True, blank=True)
+    songs = models.ManyToManyField(Song, related_name="folders", blank=True)
+    time_created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ("name",)
+        unique_together = ("owner", "name")
+
+    def __str__(self):
+        return f"{self.owner}: {self.name}"
