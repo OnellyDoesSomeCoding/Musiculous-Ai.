@@ -57,7 +57,7 @@ def song_create(request):
             generation_status='generating',
         )
 
-        # run the strategy chain: Suno → Lyria fallback
+        # run the strategy chain: Suno >>> Replicate fallback
         try:
             generator = build_default_generator()
             result = generator.generate(GenerationRequest(prompt=prompt, genres=song.genres))
