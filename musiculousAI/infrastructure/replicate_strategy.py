@@ -32,10 +32,16 @@ class ReplicateStrategy(MusicGenerationStrategy):
         if request.genres:
             prompt_text = f"{request.genres} music. {prompt_text}"
 
+        try:
+            duration = int(request.duration_in_seconds)
+        except (TypeError, ValueError):
+            duration = 30
+        duration = max(5, min(duration, 180))
+
         payload = {
             "input": {
                 "prompt": prompt_text,
-                "duration": 30,
+                "duration": duration,
                 "output_format": "mp3",
             }
         }

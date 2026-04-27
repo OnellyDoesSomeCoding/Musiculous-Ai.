@@ -5,10 +5,20 @@
 {% block content %}
 <h2 style="margin-top:0; font-size:1.08rem;">Edit Song</h2>
 
+{% if error %}
+    <div class="error">{{ error }}</div>
+{% endif %}
+
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <label for="song_name">Song Name</label>
     <input id="song_name" name="song_name" type="text" maxlength="50" value="{{ song.song_name }}" required>
+
+    <label for="genres">Genres</label>
+    <input id="genres" name="genres" type="text" maxlength="120" value="{{ song.genres }}" placeholder="e.g. lo-fi, jazz, synthwave">
+
+    <label for="duration_in_seconds">Duration in Seconds</label>
+    <input id="duration_in_seconds" name="duration_in_seconds" type="number" min="5" max="180" value="{{ song.duration_in_seconds|default:'30' }}">
 
     <label for="description">Description</label>
     <textarea id="description" name="description" maxlength="300">{{ song.description }}</textarea>

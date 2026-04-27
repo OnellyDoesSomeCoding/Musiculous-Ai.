@@ -13,13 +13,19 @@
 <form method="post">
     {% csrf_token %}
     <label for="song_name">Song Name</label>
-    <input id="song_name" name="song_name" type="text" maxlength="50" required>
+    <input id="song_name" name="song_name" type="text" maxlength="50" value="{{ song_name|default:'' }}" required>
 
     <label for="prompt">Prompt</label>
-    <textarea id="prompt" name="prompt" maxlength="500" required placeholder="Describe mood, instruments, and style..."></textarea>
+    <textarea id="prompt" name="prompt" maxlength="500" required placeholder="Describe mood, instruments, and style...">{{ prompt|default:'' }}</textarea>
+
+    <label for="genres">Genres (Optional)</label>
+    <input id="genres" name="genres" type="text" maxlength="120" value="{{ genres|default:'' }}" placeholder="e.g. lo-fi, jazz, synthwave">
+
+    <label for="duration_in_seconds">Duration in Seconds (Optional)</label>
+    <input id="duration_in_seconds" name="duration_in_seconds" type="number" min="5" max="180" value="{{ duration_in_seconds|default:'30' }}" placeholder="30">
 
     <label for="description">Description (Optional)</label>
-    <textarea id="description" name="description" maxlength="300" placeholder="Extra notes for your library"></textarea>
+    <textarea id="description" name="description" maxlength="300" placeholder="Extra notes for your library">{{ description|default:'' }}</textarea>
 
     <div class="row">
         <button class="primary" type="submit">Create and Queue</button>

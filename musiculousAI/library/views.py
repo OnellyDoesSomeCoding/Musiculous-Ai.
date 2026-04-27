@@ -15,6 +15,19 @@ from domain.music_generation import GenerationRequest
 logger = logging.getLogger(__name__)
 
 
+def _parse_duration(raw_value, default=30):
+    value = (raw_value or "").strip()
+    if not value:
+        return default, None
+    try:
+        parsed = int(value)
+    except ValueError:
+        return None, "Duration must be a whole number."
+    if parsed < 5 or parsed > 180:
+        return None, "Duration must be between 5 and 180 seconds."
+    return parsed, None
+
+
 def _user_songs_queryset(user):
     return Song.objects.filter(owner=user).order_by('-time_created')
 
@@ -163,12 +176,35 @@ def song_create(request):
     if request.method == 'POST':
         song_name = request.POST.get('song_name', '').strip()
         prompt = request.POST.get('prompt', '').strip()
+        genres = request.POST.get('genres', '').strip()
+        duration_in_seconds, duration_error = _parse_duration(
+            request.POST.get('duration_in_seconds'),
+            default=30,
+        )
         description = request.POST.get('description', '').strip()
 
         # validate required fields
         if not song_name or not prompt:
             return render(request, 'library/song_create.html',
-                        {'error': 'Song name and prompt are required.'})
+                        {
+                            'error': 'Song name and prompt are required.',
+                            'song_name': song_name,
+                            'prompt': prompt,
+                            'genres': genres,
+                            'duration_in_seconds': request.POST.get('duration_in_seconds', '30'),
+                            'description': description,
+                        })
+
+        if duration_error:
+            return render(request, 'library/song_create.html',
+                        {
+                            'error': duration_error,
+                            'song_name': song_name,
+                            'prompt': prompt,
+                            'genres': genres,
+                            'duration_in_seconds': request.POST.get('duration_in_seconds', '30'),
+                            'description': description,
+                        })
 
         # check if generation is enabled site-wide
         if not SiteConfiguration.get().generation_enabled:
@@ -180,6 +216,8 @@ def song_create(request):
             owner=request.user,
             song_name=song_name,
             prompt=prompt,
+            genres=genres,
+            duration_in_seconds=duration_in_seconds,
             description=description,
             generation_status='generating',
         )
@@ -187,7 +225,13 @@ def song_create(request):
         # run the strategy chain: Suno >>> Replicate fallback
         try:
             generator = build_default_generator()
-            result = generator.generate(GenerationRequest(prompt=prompt, genres=song.genres))
+            result = generator.generate(
+                GenerationRequest(
+                    prompt=prompt,
+                    genres=song.genres,
+                    duration_in_seconds=song.duration_in_seconds or 30,
+                )
+            )
             song.song_file.save(
                 f"song_{song.id}.mp3",
                 ContentFile(result.audio_bytes),
@@ -235,6 +279,24 @@ def song_edit(request, song_id):
 
     if request.method == 'POST':
         song.song_name = request.POST.get('song_name', song.song_name).strip()
+        song.genres = request.POST.get('genres', song.genres).strip()
+        duration_in_seconds, duration_error = _parse_duration(
+            request.POST.get('duration_in_seconds'),
+            default=song.duration_in_seconds or 30,
+        )
+        if duration_error:
+            selected_folder_ids = set(song.folders.values_list('id', flat=True))
+            return render(
+                request,
+                'library/song_edit.html',
+                {
+                    'song': song,
+                    'error': duration_error,
+                    'user_folders': user_folders,
+                    'selected_folder_ids': selected_folder_ids,
+                },
+            )
+        song.duration_in_seconds = duration_in_seconds
         song.description = request.POST.get('description', song.description).strip()
         if 'cover_image' in request.FILES:
             song.cover_image = request.FILES['cover_image']
