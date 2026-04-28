@@ -1,4 +1,5 @@
 {% extends "login/base_auth.html" %}
+{% load socialaccount %}
 
 {% block title %}Login | Musiculous AI{% endblock %}
 
@@ -25,6 +26,13 @@
     <div class="actions">
         <button class="button" type="submit">Log In</button>
     </div>
+
+    <div class="oauth-divider">or</div>
+
+    <a class="button oauth" href="{% provider_login_url 'google' process='login' next='/library/' %}">
+        <span class="google-icon" aria-hidden="true"></span>
+        <span>Login with Google</span>
+    </a>
 </form>
 
 <p class="meta">Need an account? <a href="{% url 'signup' %}">Create one</a></p>

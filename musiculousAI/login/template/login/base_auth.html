@@ -154,6 +154,23 @@
             margin-top: 8px;
         }
 
+        .oauth-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 14px 0;
+            color: var(--muted);
+            font-size: 0.84rem;
+        }
+
+        .oauth-divider::before,
+        .oauth-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
         .button {
             width: 100%;
             border: 0;
@@ -179,6 +196,28 @@
             background: linear-gradient(135deg, #223147, #334f74);
             color: #dfe8f8;
             box-shadow: none;
+        }
+
+        .button.oauth {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            background: #ffffff;
+            color: #1f2430;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .button.oauth:hover {
+            box-shadow: 0 14px 26px rgba(0, 0, 0, 0.28);
+        }
+
+        .google-icon {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: conic-gradient(#ea4335 0 25%, #fbbc05 25% 50%, #34a853 50% 75%, #4285f4 75% 100%);
         }
 
         .meta {
