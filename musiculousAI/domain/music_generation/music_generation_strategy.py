@@ -1,19 +1,7 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 
-
-@dataclass
-class GenerationRequest:
-    prompt: str
-    genres: str = ""
-    duration_in_seconds: int = 30
-
-
-@dataclass
-class GenerationResult:
-    audio_bytes: bytes
-    mime_type: str  # e.g. "audio/mpeg"
-    source: str     # which strategy produced this, e.g. "suno", "lyria"
+from .generation_request import GenerationRequest
+from .generation_result import GenerationResult
 
 
 class MusicGenerationStrategy(ABC):

@@ -1,26 +1,7 @@
-from django.conf import settings
-from django.db import models
 import uuid
 
-
-class SiteConfiguration(models.Model):
-    """Singleton model for site-wide admin controls."""
-    generation_enabled = models.BooleanField(
-        default=True,
-        help_text="Uncheck to disable new AI music generation for all users.",
-    )
-
-    class Meta:
-        verbose_name = "Site Configuration"
-        verbose_name_plural = "Site Configuration"
-
-    def __str__(self):
-        return "Site Configuration"
-
-    @classmethod
-    def get(cls):
-        obj, _ = cls.objects.get_or_create(pk=1)
-        return obj
+from django.conf import settings
+from django.db import models
 
 
 class Song(models.Model):
@@ -53,22 +34,3 @@ class Song(models.Model):
 
     def __str__(self):
         return self.song_name
-
-
-class Folder(models.Model):
-    owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="folders",
-    )
-    name = models.CharField(max_length=50)
-    image = models.ImageField(upload_to="folder_images/", null=True, blank=True)
-    songs = models.ManyToManyField(Song, related_name="folders", blank=True)
-    time_created = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ("name",)
-        unique_together = ("owner", "name")
-
-    def __str__(self):
-        return f"{self.owner}: {self.name}"
